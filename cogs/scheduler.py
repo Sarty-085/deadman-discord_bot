@@ -49,7 +49,10 @@ class SchedulerCog(commands.Cog):
 
     @tasks.loop(minutes=1)
     async def periodic_scheduler(self):
-        await self.bot.wait_until_ready()
+        try:
+            await self.bot.wait_until_ready()
+        except RuntimeError:
+            return
         now_utc = datetime.now(timezone.utc)
 
         # 1. Check for stale active games (unsolved for 8 hours)

@@ -23,6 +23,7 @@ INITIAL_EXTENSIONS = [
     "cogs.admin",
     "cogs.stats",
     "cogs.scheduler",
+    "cogs.music",
 ]
 
 class WholesomeBot(commands.Bot):
@@ -30,6 +31,7 @@ class WholesomeBot(commands.Bot):
         intents = discord.Intents.default()
         intents.message_content = True
         intents.guilds = True
+        intents.voice_states = True
 
         super().__init__(
             command_prefix=BOT_PREFIX,
@@ -58,7 +60,7 @@ class WholesomeBot(commands.Bot):
     async def on_ready(self):
         logger.info(f"Logged in as {self.user} (ID: {self.user.id})")
         logger.info(f"Serving across {len(self.guilds)} servers")
-        activity = discord.Game(name=f"Hangman | /help • {BOT_PREFIX}help")
+        activity = discord.Game(name=f"Hangman & Music | /help • {BOT_PREFIX}help")
         await self.change_presence(activity=activity)
         logger.info(f"{BOT_NAME} is fully online and ready!")
 

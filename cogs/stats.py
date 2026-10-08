@@ -48,6 +48,20 @@ class StatsCog(commands.Cog):
             inline=False
         )
         embed.add_field(
+            name="🎵 Music Commands (Lavalink)",
+            value=(
+                "• `/play <query>` or `h!play` — Play any song or playlist with interactive controls\n"
+                "• `/pause` & `/resume` — Pause or resume playback\n"
+                "• `/skip [count]` & `/stop` — Skip tracks or stop and leave voice\n"
+                "• `/queue` & `/shuffle` — View upcoming queue or randomize order\n"
+                "• `/loop [mode]` & `/autoplay` — Cycle repeat modes or toggle continuous autoplay\n"
+                "• `/volume <0-200>` — Adjust audio volume\n"
+                "• `/nowplaying` — Open interactive button panel (Play, Skip, Loop, Volume, Queue)\n"
+                "• `/filter <preset>` — Bass boost, nightcore, 8D audio, or karaoke"
+            ),
+            inline=False
+        )
+        embed.add_field(
             name="📊 Stats & Profile Commands",
             value=(
                 "• `/profile [@user]` or `h!profile` — View player profile, synced badges & global XP\n"
