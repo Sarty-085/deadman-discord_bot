@@ -48,18 +48,18 @@ plugins:
     enabled: true
     oauth:
       enabled: true
-      # Once you link your Google account via the link in the Lavalink console,
-      # you can optionally paste the refreshToken here to avoid having to re-link on restart:
-      # refreshToken: "your_refresh_token_here"
+      refreshToken: "${YOUTUBE_OAUTH_REFRESH_TOKEN:}" # Paste your generated refresh token here on bot-hosting.net
+      skipInitialization: true
+
     pot:
       token: ""
       visitorData: ""
     clients:
+      - TV
       - MUSIC
       - ANDROID_VR
-      - ANDROID_TESTSUITE
       - WEB
-      - TVHTML5_SIMPLY
+
 
 
   lavasrc:
