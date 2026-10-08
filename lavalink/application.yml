@@ -1,6 +1,7 @@
 server:
-  port: 25873 # Set to your allocated port from bot-hosting.net (e.g. 25873)
+  port: ${SERVER_PORT:2333} # Defaults to 2333 locally
   address: 0.0.0.0
+
   http2:
     enabled: false
 

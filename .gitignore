@@ -28,3 +28,12 @@ ENV/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Lavalink binaries & logs
+*.jar
+lavalink/plugins/
+lavalink/logs/
+lavalink/run_lavalink.bat
+run_lavalink.bat
+
+
