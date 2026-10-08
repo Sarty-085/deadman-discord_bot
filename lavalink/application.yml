@@ -66,7 +66,9 @@ plugins:
     providers:
       - "ytsearch:\"%ISRC%\""
       - "ytsearch:%QUERY%"
+      - "scsearch:%QUERY%"
     sources:
+
       spotify: true
       applemusic: false # Disabled: requires Apple Music developer token
       deezer: false     # Disabled: requires Deezer master key (fixed crash)
