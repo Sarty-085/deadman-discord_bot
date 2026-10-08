@@ -1,14 +1,14 @@
 server:
-  port: 2333
+  port: 25873 # Set to your allocated port from bot-hosting.net (e.g. 25873)
   address: 0.0.0.0
   http2:
     enabled: false
 
 lavalink:
   plugins:
-    - dependency: "dev.lavalink.youtube:youtube-plugin:1.11.4"
+    - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.2"
       repository: "https://maven.lavalink.dev/releases"
-    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.4.1"
+    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.8.3"
       repository: "https://maven.lavalink.dev/releases"
 
   server:
@@ -63,8 +63,8 @@ plugins:
       - "ytsearch:%QUERY%"
     sources:
       spotify: true
-      applemusic: true
-      deezer: true
+      applemusic: false # Disabled: requires Apple Music developer token
+      deezer: false     # Disabled: requires Deezer master key (fixed crash)
       yandexmusic: false
       flowerytts: false
       youtube: true
