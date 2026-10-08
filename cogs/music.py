@@ -317,22 +317,58 @@ class MusicCog(commands.Cog):
         err_msg = payload.exception.get("message", "Playback failed") if isinstance(payload.exception, dict) else str(payload.exception)
         print(f"[MusicCog] Track exception on '{track.title}': {err_msg}")
 
-        channel = getattr(player, "home_channel", None) if player else None
-        if channel:
-            embed = discord.Embed(
-                title="⚠️ Playback Notice",
-                description=(
-                    f"Could not stream **{track.title}**.\n\n"
-                    f"**Provider Details:** `{err_msg}`\n\n"
-                    "💡 *Tip: If YouTube requires login, link your Google account via OAuth in your Lavalink console, or try a SoundCloud/Spotify track.*"
-                ),
-                color=0xED4245
-            )
-            set_cohesive_style(embed, self.bot.user)
-            await channel.send(embed=embed)
+        # Check if we already attempted fallback for this track to avoid loops
+        if player and getattr(player, "_fallback_in_progress", False):
+            player._fallback_in_progress = False
+            return
 
-        if player and not player.queue.is_empty:
-            await player.play(player.queue.get())
+        channel = getattr(player, "home_channel", None) if player else None
+        fallback_success = False
+
+        # If YouTube cipher or provider playback failed, auto-fallback to SoundCloud
+        if player and track.title:
+            try:
+                search_query = f"{track.title} {track.author}".strip()
+                sc_tracks = await wavelink.Playable.search(search_query, source=wavelink.TrackSource.SoundCloud)
+                if sc_tracks:
+                    player._fallback_in_progress = True
+                    fb_track = sc_tracks[0]
+                    fb_track.requester = getattr(track, "requester", None)
+                    if channel:
+                        embed = discord.Embed(
+                            title="🔄 Streaming Fallback",
+                            description=(
+                                f"YouTube cipher issue detected on **{track.title}**.\n"
+                                f"Automatically switched to **SoundCloud** audio stream! 🎶"
+                            ),
+                            color=0xFEE75C
+                        )
+                        set_cohesive_style(embed, self.bot.user)
+                        await channel.send(embed=embed)
+                    await player.play(fb_track)
+                    fallback_success = True
+            except Exception as e:
+                print(f"[MusicCog] Fallback to SoundCloud failed: {e}")
+
+        if not fallback_success:
+            if player:
+                player._fallback_in_progress = False
+            if channel:
+                embed = discord.Embed(
+                    title="⚠️ Playback Notice",
+                    description=(
+                        f"Could not stream **{track.title}**.\n\n"
+                        f"**Provider Details:** `{err_msg}`\n\n"
+                        "💡 *Tip: Try searching by song name (e.g. `/play Sunflower Post Malone`) or pasting a Spotify/SoundCloud link.*"
+                    ),
+                    color=0xED4245
+                )
+                set_cohesive_style(embed, self.bot.user)
+                await channel.send(embed=embed)
+
+            if player and not player.queue.is_empty:
+                await player.play(player.queue.get())
+
 
     @commands.Cog.listener()
     async def on_wavelink_track_stuck(self, payload: wavelink.TrackStuckEventPayload):
