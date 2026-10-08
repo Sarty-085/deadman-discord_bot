@@ -9,9 +9,11 @@ BOT_OWNER_ID = int(os.getenv("BOT_OWNER_ID")) if os.getenv("BOT_OWNER_ID") else 
 
 BOT_NAME = "Wholesome Bot"
 
-COLOR_GAME = 0x4169E1       # RoyalBlue
-COLOR_HELP = 0x3498DB       # Blue
-COLOR_STATS = 0x3498DB      # Blue
-COLOR_DAILY = 0xFFD700      # Gold
-COLOR_WEEKLY = 0xFFD700     # Gold
-COLOR_MONTHLY = 0xFF4500    # OrangeRed
+# Cohesive Color Palette
+COLOR_GAME = 0x5865F2       # Discord Blurple
+COLOR_HELP = 0x5865F2       # Discord Blurple
+COLOR_STATS = 0x5865F2      # Discord Blurple
+COLOR_DAILY = 0xFEE75C      # Warm Gold
+COLOR_WEEKLY = 0xFEE75C     # Warm Gold
+COLOR_MONTHLY = 0xEB459E    # Fuchsia / Seasonal Champion
+COLOR_TIMEOUT = 0xED4245    # Red

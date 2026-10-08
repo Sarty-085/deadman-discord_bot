@@ -4,7 +4,6 @@ import random
 import re
 from typing import Optional, List, Dict, Any
 
-from config import COLOR_GAME
 from database import (
     get_game_channel,
     get_active_game,
@@ -18,16 +17,7 @@ from database import (
     add_user_xp,
 )
 from words.word_manager import WordManager
-
-HEARTS = {
-    6: "❤️❤️❤️❤️❤️❤️",
-    5: "❤️❤️❤️❤️❤️",
-    4: "❤️❤️❤️❤️",
-    3: "❤️❤️❤️",
-    2: "❤️❤️",
-    1: "❤️",
-    0: "💀"
-}
+from embeds import create_board_embed
 
 MISS_MESSAGES = {
     5: [
@@ -66,42 +56,16 @@ class GameCog(commands.Cog):
             return None
 
         players = await get_active_players(guild_id)
-
-        embed = discord.Embed(
-            title="🎯 Hangman — English",
-            description="Guess the secret word!\nSimply type one letter or the full word in this channel.",
-            color=COLOR_GAME
-        )
-
-        # Clue Field
-        category = game.get("category", "General")
-        clue = game.get("clue", "A mysterious concept.")
-        embed.add_field(name="📌 Clue", value=f"**[{category}]** {clue}", inline=False)
-
-        # Lives Field
-        if not players:
-            lives_value = "😕 No players in this round yet"
-        else:
-            lines = []
-            for p in players:
-                u_name = p.get("user_name", "Player")
-                lives = p.get("lives", 0)
-                hint_used = p.get("hint_used", 0)
-                heart_str = HEARTS.get(lives, "💀")
-                hint_str = " (🔍)" if (lives > 0 and not hint_used) else ""
-                lines.append(f"@{u_name}: {heart_str}{hint_str}")
-            lives_value = "\n".join(lines)
-        embed.add_field(name="🛡 Lives", value=lives_value, inline=False)
-
-        # Word Field
         masked_word = self.word_manager.format_masked_word(game["word"], game["guessed_letters"])
-        embed.add_field(name="🧩 Word", value=masked_word, inline=False)
-
-        # Guessed Letters Field
         letters_display = self.word_manager.format_guessed_letters(game["guessed_letters"])
-        embed.add_field(name="🔠 Guessed Letters", value=letters_display, inline=False)
 
-        return embed
+        return create_board_embed(
+            game=game,
+            players=players,
+            masked_word=masked_word,
+            letters_display=letters_display,
+            bot_user=self.bot.user
+        )
 
     async def start_new_round(self, channel: discord.TextChannel) -> discord.Embed:
         guild_id = channel.guild.id
@@ -143,7 +107,6 @@ class GameCog(commands.Cog):
         if message.author.bot or not message.guild:
             return
 
-        # Check if in configured game channel
         configured_channel_id = await get_game_channel(message.guild.id)
         if not configured_channel_id or message.channel.id != configured_channel_id:
             return
@@ -152,7 +115,7 @@ class GameCog(commands.Cog):
         if not content:
             return
 
-        # Skip commands
+        # Check if message is a command
         ctx = await self.bot.get_context(message)
         if ctx.valid:
             return
@@ -177,7 +140,6 @@ class GameCog(commands.Cog):
         if len(content) == 1 and content.isalpha():
             letter = content.upper()
 
-            # Ignore already guessed letters without penalty
             if letter in guessed_letters:
                 return
 
@@ -187,7 +149,6 @@ class GameCog(commands.Cog):
 
             if letter in word:
                 await message.channel.send(f"✅ Hit! The team cheers for you, {message.author.mention}!")
-                # Check win
                 if self.word_manager.is_word_revealed(word, game["guessed_letters"]):
                     await self.handle_word_win(message.channel, message.author, word)
                     return
@@ -197,7 +158,6 @@ class GameCog(commands.Cog):
                 miss_phrase = random.choice(MISS_MESSAGES.get(new_lives, ["❌ Wrong guess!"])).format(mention=message.author.mention)
                 await message.channel.send(miss_phrase)
 
-            # Send updated game board
             embed = await self.create_game_embed(message.guild.id)
             if embed:
                 await message.channel.send(embed=embed)
@@ -212,7 +172,6 @@ class GameCog(commands.Cog):
                 await self.handle_word_win(message.channel, message.author, word)
                 return
             else:
-                # Wrong word guess penalty
                 new_lives = player["lives"] - 1
                 await update_player_lives(message.guild.id, message.author.id, new_lives)
                 miss_phrase = random.choice(MISS_MESSAGES.get(new_lives, ["❌ Wrong guess!"])).format(mention=message.author.mention)
@@ -222,39 +181,39 @@ class GameCog(commands.Cog):
                 if embed:
                     await message.channel.send(embed=embed)
 
-    @commands.command(name="hint")
+    @commands.hybrid_command(name="hint", description="Get a hint for the active hangman game (reveals 1 letter).")
     async def hint(self, ctx: commands.Context):
         configured_channel_id = await get_game_channel(ctx.guild.id)
         if not configured_channel_id or ctx.channel.id != configured_channel_id:
+            await ctx.send("❌ You can only use `h!hint` or `/hint` inside the designated game channel!", ephemeral=True)
             return
 
         game = await get_active_game(ctx.guild.id)
         if not game:
-            await ctx.send("❌ No game is currently in progress! Use `h!start` to begin.")
+            await ctx.send("❌ No game is currently in progress! Use `/start` to begin.", ephemeral=True)
             return
 
         players = await get_active_players(ctx.guild.id)
         current_player = next((p for p in players if p["user_id"] == ctx.author.id), None)
 
         if not current_player:
-            await ctx.send(f"❌ {ctx.author.mention}, you need to join the game first by making a guess!")
+            await ctx.send(f"❌ {ctx.author.mention}, you need to join the game first by making a guess!", ephemeral=True)
             return
 
         if current_player["lives"] <= 0:
-            await ctx.send(f"❌ {ctx.author.mention}, you're out of lives! You can't use hints.")
+            await ctx.send(f"❌ {ctx.author.mention}, you're out of lives! You can't use hints.", ephemeral=True)
             return
 
         if current_player["hint_used"]:
-            await ctx.send(f"❌ {ctx.author.mention}, you've already used your hint for this word!")
+            await ctx.send(f"❌ {ctx.author.mention}, you've already used your hint for this word!", ephemeral=True)
             return
 
-        # Find unguessed letters in target word
         word = game["word"].upper()
         guessed_set = set(game["guessed_letters"])
         hidden_letters = [ch for ch in set(word) if ch.isalpha() and ch not in guessed_set]
 
         if not hidden_letters:
-            await ctx.send("All letters have already been revealed!")
+            await ctx.send("All letters have already been revealed!", ephemeral=True)
             return
 
         chosen_letter = random.choice(hidden_letters)
@@ -264,7 +223,6 @@ class GameCog(commands.Cog):
 
         await ctx.send(f"💡 Hint for {ctx.author.mention}: The word contains the letter **{chosen_letter}**")
 
-        # Check if hint revealed the entire word
         if self.word_manager.is_word_revealed(word, game["guessed_letters"]):
             await ctx.send(f"✨ The hint revealed the complete word: **{word}**!\n🧩 **A new mystery awaits! Decipher it!**")
             next_embed = await self.start_new_round(ctx.channel)

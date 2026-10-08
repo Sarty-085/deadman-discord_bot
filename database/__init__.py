@@ -6,6 +6,7 @@ from .db import (
     save_active_game,
     update_guessed_letters,
     get_active_game,
+    get_stale_active_games,
     clear_active_game,
     add_or_get_player,
     update_player_lives,
@@ -13,6 +14,7 @@ from .db import (
     get_active_players,
     add_user_xp,
     get_user_stats,
+    get_global_user_profile,
     get_server_leaderboard,
     get_global_monthly_leaderboard,
     get_server_stats,
@@ -20,5 +22,5 @@ from .db import (
     reset_weekly_xp,
     reset_monthly_xp,
     record_leaderboard_history,
-    add_badge_to_user,
+    add_global_badge,
 )

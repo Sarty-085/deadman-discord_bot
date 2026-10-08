@@ -4,192 +4,190 @@ from typing import Optional
 
 from config import (
     COLOR_HELP,
-    COLOR_STATS,
     COLOR_DAILY,
     COLOR_WEEKLY,
     COLOR_MONTHLY,
+    COLOR_STATS,
     BOT_OWNER_ID,
 )
 from database import (
     get_user_stats,
+    get_global_user_profile,
     get_server_leaderboard,
     get_global_monthly_leaderboard,
     get_server_stats,
 )
-
-MEDALS = ["🥇", "🥈", "🥉", "4.", "5.", "6.", "7.", "8.", "9.", "10."]
+from embeds import (
+    create_profile_embed,
+    create_leaderboard_embed,
+    set_cohesive_style,
+)
 
 class StatsCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.command(name="help")
+    @commands.hybrid_command(
+        name="help",
+        description="View the Wholesome Bot hangman rules, commands, and badge guide."
+    )
     async def help_cmd(self, ctx: commands.Context):
         embed = discord.Embed(
-            title="🎮 Hangman Bot Commands",
-            description="All available commands for the Hangman bot",
+            title="🎮 Wholesome Bot — Hangman Guide",
+            description="Welcome to cooperative multiplayer Hangman with clues!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
             color=COLOR_HELP
         )
-        embed.set_footer(text="Prefix: h! | Top 3 monthly players become Champions!")
 
         embed.add_field(
-            name="🎯 Game Commands (Everyone)",
-            value="`h!start` - Start a new hangman game\n`h!hint` - Get a hint (reveals 1 letter, once per word)",
+            name="🎯 Game Commands",
+            value=(
+                "• `/start` or `h!start` — Start a new word in the game channel\n"
+                "• `/hint` or `h!hint` — Reveal 1 hidden letter (1 per word per player)\n"
+                "• *Type single letters or full words in the game channel to play!*"
+            ),
             inline=False
         )
         embed.add_field(
-            name="📊 Stats Commands (Everyone)",
+            name="📊 Stats & Profile Commands",
             value=(
-                "`h!stats` - View your personal stats\n"
-                "`h!daily` - View your daily stats & leaderboard\n"
-                "`h!weekly` - View weekly server leaderboard\n"
-                "`h!monthly` - View monthly global leaderboard\n"
-                "`h!serverstats` - View server statistics\n"
-                "`h!leaderboard` / `h!lb` / `h!top` - Quick leaderboard"
+                "• `/profile [@user]` or `h!profile` — View player profile, synced badges & global XP\n"
+                "• `/daily` or `h!daily` — View today's server leaderboard\n"
+                "• `/weekly` or `h!weekly` — View this week's server leaderboard\n"
+                "• `/monthly` or `h!monthly` — View global monthly leaderboard (Top 1 wins Seasonal Badges)\n"
+                "• `/serverstats` or `h!serverstats` — View total server games & player stats\n"
+                "• `/leaderboard` or `h!lb` — Quick access to server rankings"
             ),
             inline=False
         )
         embed.add_field(
             name="🛡️ Admin Commands",
-            value="`h!setchannel` - Set current channel as game channel\n`h!skip` - Skip current word (requires Manage Messages)",
-            inline=False
-        )
-        embed.add_field(
-            name="💡 How to Play",
-            value="Simply type a letter or full word in the game channel to play!\nGuess correctly to earn XP. Watch out for your lives!",
-            inline=False
-        )
-        embed.add_field(
-            name="🏆 Badges & Ribbons",
             value=(
-                "👑 = Current Monthly Champion\n"
-                "⚡👨‍💻 = Bot Owner\n"
-                "🥉 = 1 Title | 🥈 = 3 Titles | 🥇 = 6 Titles | 🏅 = 12 Titles\n"
-                "🎃🎄🌕🪔🎆💝🐰 = Seasonal Event Badges"
+                "• `/setchannel` or `h!setchannel` — Set current channel as game channel\n"
+                "• `/skip` or `h!skip` — Skip current word (Server Admins & Mods)"
             ),
             inline=False
         )
-
-        await ctx.send(embed=embed)
-
-    @commands.command(name="stats")
-    async def stats(self, ctx: commands.Context, member: Optional[discord.Member] = None):
-        target = member or ctx.author
-        stats = await get_user_stats(target.id, ctx.guild.id)
-
-        embed = discord.Embed(
-            title=f"📊 Hangman Stats — {target.display_name}",
-            color=COLOR_STATS
+        embed.add_field(
+            name="🏆 Seasonal Badges & Honors (Synced Across Servers)",
+            value=(
+                "• 👑 **Monthly Global Champion** — Awarded to the #1 global monthly player\n"
+                "• ⚡👨‍💻 **Bot Owner** — Bot creator\n"
+                "• 🎃 🎄 🌕 🪔 🎆 💝 🐰 **Seasonal Badges** — Exclusive monthly event badges synced to your profile across all servers!"
+            ),
+            inline=False
         )
-        embed.set_thumbnail(url=target.display_avatar.url)
+        embed.add_field(
+            name="💡 Rules & 8-Hour Timer",
+            value="Each player gets **6 lives** (`❤️❤️❤️❤️❤️❤️`). Wrong guesses only penalize the guessing player. If no one cracks a word in **8 hours**, it automatically skips!",
+            inline=False
+        )
 
-        badges = []
-        if target.id == BOT_OWNER_ID:
-            badges.append("⚡👨‍💻 Bot Owner")
-        if stats and stats.get("badges"):
-            badges.append(stats["badges"])
-
-        badges_str = " ".join(badges) if badges else "None yet"
-
-        total_xp = stats["total_xp"] if stats else 0
-        daily_xp = stats["daily_xp"] if stats else 0
-        weekly_xp = stats["weekly_xp"] if stats else 0
-        monthly_xp = stats["monthly_xp"] if stats else 0
-        solved = stats["words_solved"] if stats else 0
-
-        embed.add_field(name="⭐ Total XP", value=f"**{total_xp:,} XP**", inline=True)
-        embed.add_field(name="📅 Daily XP", value=f"**{daily_xp:,} XP**", inline=True)
-        embed.add_field(name="📆 Weekly XP", value=f"**{weekly_xp:,} XP**", inline=True)
-        embed.add_field(name="🏆 Monthly XP", value=f"**{monthly_xp:,} XP**", inline=True)
-        embed.add_field(name="🧩 Words Cracked", value=f"**{solved:,}**", inline=True)
-        embed.add_field(name="🎖️ Badges", value=badges_str, inline=True)
-
+        set_cohesive_style(embed, self.bot.user)
         await ctx.send(embed=embed)
 
-    @commands.command(name="daily")
+    @commands.hybrid_command(
+        name="profile",
+        description="View your global hangman profile, synced seasonal badges, and server XP."
+    )
+    async def profile(self, ctx: commands.Context, member: Optional[discord.Member] = None):
+        target = member or ctx.author
+        profile = await get_global_user_profile(target.id)
+        srv_stats = await get_user_stats(target.id, ctx.guild.id)
+        is_owner = (target.id == BOT_OWNER_ID)
+
+        embed = create_profile_embed(
+            member=target,
+            profile=profile,
+            server_stats=srv_stats,
+            is_owner=is_owner,
+            bot_user=self.bot.user
+        )
+        await ctx.send(embed=embed)
+
+    @commands.hybrid_command(
+        name="stats",
+        description="Alias for profile: View player statistics and achievements."
+    )
+    async def stats(self, ctx: commands.Context, member: Optional[discord.Member] = None):
+        await self.profile(ctx, member=member)
+
+    @commands.hybrid_command(
+        name="daily",
+        description="View today's top players on this server."
+    )
     async def daily(self, ctx: commands.Context):
         top_players = await get_server_leaderboard(ctx.guild.id, period="daily", limit=10)
-
-        embed = discord.Embed(
-            title="📅 Today's Leaderboard",
-            description=f"Top players today in **{ctx.guild.name}**",
-            color=COLOR_DAILY
+        embed = create_leaderboard_embed(
+            title="📅 Daily Server Leaderboard",
+            description=f"Top performers today in **{ctx.guild.name}**",
+            players=top_players,
+            xp_field="daily_xp",
+            color=COLOR_DAILY,
+            footer_text="Daily scores reset every midnight at 00:00 UTC",
+            bot_user=self.bot.user
         )
-        embed.set_footer(text="Daily stats reset every midnight UTC")
-
-        if not top_players:
-            embed.add_field(name="", value="No points scored today yet! Be the first to guess!", inline=False)
-        else:
-            lines = []
-            for i, p in enumerate(top_players):
-                medal = MEDALS[i] if i < len(MEDALS) else f"{i+1}."
-                lines.append(f"{medal} @{p['user_name']} — **{p['daily_xp']} XP**")
-            embed.add_field(name="", value="\n".join(lines), inline=False)
-
         await ctx.send(embed=embed)
 
-    @commands.command(name="weekly")
+    @commands.hybrid_command(
+        name="weekly",
+        description="View this week's top players on this server."
+    )
     async def weekly(self, ctx: commands.Context):
         top_players = await get_server_leaderboard(ctx.guild.id, period="weekly", limit=10)
-
-        embed = discord.Embed(
-            title="📆 Weekly Leaderboard",
-            description=f"Top players this week in **{ctx.guild.name}**",
-            color=COLOR_WEEKLY
+        embed = create_leaderboard_embed(
+            title="📆 Weekly Server Leaderboard",
+            description=f"Top performers this week in **{ctx.guild.name}**",
+            players=top_players,
+            xp_field="weekly_xp",
+            color=COLOR_WEEKLY,
+            footer_text="Weekly scores reset every Sunday at 00:00 UTC",
+            bot_user=self.bot.user
         )
-        embed.set_footer(text="Weekly leaderboard resets every Sunday at midnight UTC")
-
-        if not top_players:
-            embed.add_field(name="", value="No points scored this week yet! Start playing to climb the ranks!", inline=False)
-        else:
-            lines = []
-            for i, p in enumerate(top_players):
-                medal = MEDALS[i] if i < len(MEDALS) else f"{i+1}."
-                lines.append(f"{medal} @{p['user_name']} — **{p['weekly_xp']} XP**")
-            embed.add_field(name="", value="\n".join(lines), inline=False)
-
         await ctx.send(embed=embed)
 
-    @commands.command(name="monthly")
+    @commands.hybrid_command(
+        name="monthly",
+        description="View the global monthly leaderboard across all servers (Top 1 wins Seasonal Badge)."
+    )
     async def monthly(self, ctx: commands.Context):
         top_players = await get_global_monthly_leaderboard(limit=10)
         server_count = len(self.bot.guilds)
-
-        embed = discord.Embed(
-            title="🏆 Monthly Global Leaderboard",
-            description="Top players across ALL servers this month!",
-            color=COLOR_MONTHLY
+        embed = create_leaderboard_embed(
+            title="🏆 Global Monthly Leaderboard",
+            description="Top players across **ALL servers** this month!\nThe #1 Champion receives exclusive seasonal badges synced to their profile.",
+            players=top_players,
+            xp_field="monthly_xp",
+            color=COLOR_MONTHLY,
+            footer_text=f"Resets on 1st of each month • {server_count} servers tracked",
+            bot_user=self.bot.user
         )
-        embed.set_footer(text=f"Resets on 1st of each month | {server_count} servers tracked")
-
-        if not top_players:
-            embed.add_field(name="", value="No players tracked this month yet!", inline=False)
-        else:
-            lines = []
-            for i, p in enumerate(top_players):
-                medal = MEDALS[i] if i < len(MEDALS) else f"{i+1}."
-                lines.append(f"{medal} @{p['user_name']} — **{p['monthly_xp']} XP**")
-            embed.add_field(name="", value="\n".join(lines), inline=False)
-
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["lb", "top"])
+    @commands.hybrid_command(
+        name="leaderboard",
+        aliases=["lb", "top"],
+        description="Quick access to the server's weekly leaderboard."
+    )
     async def leaderboard(self, ctx: commands.Context):
-        # Default leaderboard points to weekly
         await self.weekly(ctx)
 
-    @commands.command(name="serverstats")
+    @commands.hybrid_command(
+        name="serverstats",
+        description="View general hangman statistics for this server."
+    )
     async def serverstats(self, ctx: commands.Context):
         stats = await get_server_stats(ctx.guild.id)
 
         embed = discord.Embed(
             title=f"📈 Server Statistics — {ctx.guild.name}",
+            description="Overview of hangman participation on this server.\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
             color=COLOR_STATS
         )
         embed.add_field(name="👥 Active Players", value=f"**{stats['player_count']}**", inline=True)
-        embed.add_field(name="🧩 Words Cracked", value=f"**{stats['words_solved']}**", inline=True)
-        embed.add_field(name="⭐ Total XP Earned", value=f"**{stats['total_xp']:,} XP**", inline=True)
+        embed.add_field(name="🧩 Words Solved", value=f"**{stats['words_solved']}**", inline=True)
+        embed.add_field(name="⭐ Total Server XP", value=f"**{stats['total_xp']:,} XP**", inline=True)
 
+        set_cohesive_style(embed, self.bot.user)
         await ctx.send(embed=embed)
 
 async def setup(bot: commands.Bot):

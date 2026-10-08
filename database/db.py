@@ -1,6 +1,7 @@
 import os
 import sqlite3
 import asyncio
+import time
 from typing import Optional, List, Dict, Any
 
 DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "hangman.db")
@@ -30,7 +31,7 @@ def _init_db_sync():
                 clue TEXT,
                 difficulty TEXT,
                 guessed_letters TEXT,
-                start_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                start_time REAL
             )
         """)
         cursor.execute("""
@@ -53,8 +54,17 @@ def _init_db_sync():
                 weekly_xp INTEGER DEFAULT 0,
                 monthly_xp INTEGER DEFAULT 0,
                 words_solved INTEGER DEFAULT 0,
-                badges TEXT DEFAULT '',
                 PRIMARY KEY (user_id, guild_id)
+            )
+        """)
+        # Global profiles table synced across all servers for badges and global standing
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS global_profiles (
+                user_id INTEGER PRIMARY KEY,
+                user_name TEXT,
+                badges TEXT DEFAULT '',
+                titles TEXT DEFAULT '',
+                first_seen TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         """)
         cursor.execute("""
@@ -109,18 +119,20 @@ async def get_all_guild_settings() -> List[Dict[str, Any]]:
 # --- Active Game ---
 def _save_active_game_sync(guild_id: int, channel_id: int, word: str, category: str, clue: str, difficulty: str, guessed_letters: List[str]):
     letters_str = ",".join(sorted(guessed_letters))
+    current_time = time.time()
     with _get_connection() as conn:
         conn.execute("""
-            INSERT INTO active_game (guild_id, channel_id, word, category, clue, difficulty, guessed_letters)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO active_game (guild_id, channel_id, word, category, clue, difficulty, guessed_letters, start_time)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             ON CONFLICT(guild_id) DO UPDATE SET
                 channel_id=excluded.channel_id,
                 word=excluded.word,
                 category=excluded.category,
                 clue=excluded.clue,
                 difficulty=excluded.difficulty,
-                guessed_letters=excluded.guessed_letters
-        """, (guild_id, channel_id, word, category, clue, difficulty, letters_str))
+                guessed_letters=excluded.guessed_letters,
+                start_time=excluded.start_time
+        """, (guild_id, channel_id, word, category, clue, difficulty, letters_str, current_time))
         conn.commit()
 
 async def save_active_game(guild_id: int, channel_id: int, word: str, category: str, clue: str, difficulty: str, guessed_letters: List[str]):
@@ -149,6 +161,22 @@ def _get_active_game_sync(guild_id: int) -> Optional[Dict[str, Any]]:
 async def get_active_game(guild_id: int) -> Optional[Dict[str, Any]]:
     return await asyncio.to_thread(_get_active_game_sync, guild_id)
 
+def _get_stale_active_games_sync(max_age_seconds: float) -> List[Dict[str, Any]]:
+    threshold = time.time() - max_age_seconds
+    with _get_connection() as conn:
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM active_game WHERE start_time <= ?", (threshold,))
+        rows = cursor.fetchall()
+        result = []
+        for r in rows:
+            data = dict(r)
+            data["guessed_letters"] = data["guessed_letters"].split(",") if data["guessed_letters"] else []
+            result.append(data)
+        return result
+
+async def get_stale_active_games(max_age_seconds: float = 8 * 3600) -> List[Dict[str, Any]]:
+    return await asyncio.to_thread(_get_stale_active_games_sync, max_age_seconds)
+
 def _clear_active_game_sync(guild_id: int):
     with _get_connection() as conn:
         conn.execute("DELETE FROM active_game WHERE guild_id = ?", (guild_id,))
@@ -170,6 +198,12 @@ def _add_or_get_player_sync(guild_id: int, user_id: int, user_name: str) -> Dict
             INSERT INTO active_players (guild_id, user_id, user_name, lives, hint_used)
             VALUES (?, ?, ?, 6, 0)
         """, (guild_id, user_id, user_name))
+        # Ensure global profile exists
+        conn.execute("""
+            INSERT INTO global_profiles (user_id, user_name)
+            VALUES (?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET user_name=excluded.user_name
+        """, (user_id, user_name))
         conn.commit()
         return {"guild_id": guild_id, "user_id": user_id, "user_name": user_name, "lives": 6, "hint_used": 0, "is_new": True}
 
@@ -216,6 +250,12 @@ def _add_user_xp_sync(user_id: int, guild_id: int, user_name: str, xp_gain: int)
                 monthly_xp=monthly_xp + excluded.monthly_xp,
                 words_solved=words_solved + 1
         """, (user_id, guild_id, user_name, xp_gain, xp_gain, xp_gain, xp_gain))
+
+        conn.execute("""
+            INSERT INTO global_profiles (user_id, user_name)
+            VALUES (?, ?)
+            ON CONFLICT(user_id) DO UPDATE SET user_name=excluded.user_name
+        """, (user_id, user_name))
         conn.commit()
 
         cursor = conn.cursor()
@@ -235,6 +275,45 @@ def _get_user_stats_sync(user_id: int, guild_id: int) -> Optional[Dict[str, Any]
 
 async def get_user_stats(user_id: int, guild_id: int) -> Optional[Dict[str, Any]]:
     return await asyncio.to_thread(_get_user_stats_sync, user_id, guild_id)
+
+def _get_global_user_profile_sync(user_id: int) -> Dict[str, Any]:
+    with _get_connection() as conn:
+        cursor = conn.cursor()
+        # Fetch badges
+        cursor.execute("SELECT user_name, badges, titles FROM global_profiles WHERE user_id = ?", (user_id,))
+        p_row = cursor.fetchone()
+        user_name = p_row["user_name"] if p_row else "Player"
+        badges = p_row["badges"] if p_row and p_row["badges"] else ""
+        titles = p_row["titles"] if p_row and p_row["titles"] else ""
+
+        # Aggregate totals across all guilds
+        cursor.execute("""
+            SELECT SUM(total_xp) as total_xp,
+                   SUM(daily_xp) as daily_xp,
+                   SUM(weekly_xp) as weekly_xp,
+                   SUM(monthly_xp) as monthly_xp,
+                   SUM(words_solved) as words_solved,
+                   COUNT(guild_id) as servers_count
+            FROM user_stats
+            WHERE user_id = ?
+        """, (user_id,))
+        agg = cursor.fetchone()
+
+        return {
+            "user_id": user_id,
+            "user_name": user_name,
+            "badges": badges,
+            "titles": titles,
+            "total_xp": (agg["total_xp"] or 0) if agg else 0,
+            "daily_xp": (agg["daily_xp"] or 0) if agg else 0,
+            "weekly_xp": (agg["weekly_xp"] or 0) if agg else 0,
+            "monthly_xp": (agg["monthly_xp"] or 0) if agg else 0,
+            "words_solved": (agg["words_solved"] or 0) if agg else 0,
+            "servers_count": (agg["servers_count"] or 0) if agg else 0,
+        }
+
+async def get_global_user_profile(user_id: int) -> Dict[str, Any]:
+    return await asyncio.to_thread(_get_global_user_profile_sync, user_id)
 
 def _get_server_leaderboard_sync(guild_id: int, period: str, limit: int) -> List[Dict[str, Any]]:
     column_map = {
@@ -321,17 +400,19 @@ def _record_leaderboard_history_sync(guild_id: int, period: str, top_user_id: in
 async def record_leaderboard_history(guild_id: int, period: str, top_user_id: int, top_user_name: str, xp: int):
     await asyncio.to_thread(_record_leaderboard_history_sync, guild_id, period, top_user_id, top_user_name, xp)
 
-def _add_badge_to_user_sync(user_id: int, badge: str):
+def _add_global_badge_sync(user_id: int, badge: str):
     with _get_connection() as conn:
         cursor = conn.cursor()
-        cursor.execute("SELECT badges FROM user_stats WHERE user_id = ?", (user_id,))
-        rows = cursor.fetchall()
-        for r in rows:
-            existing = r[0] or ""
+        cursor.execute("SELECT badges FROM global_profiles WHERE user_id = ?", (user_id,))
+        row = cursor.fetchone()
+        if row:
+            existing = row["badges"] or ""
             if badge not in existing:
                 new_badges = f"{existing} {badge}".strip()
-                conn.execute("UPDATE user_stats SET badges = ? WHERE user_id = ?", (new_badges, user_id))
+                conn.execute("UPDATE global_profiles SET badges = ? WHERE user_id = ?", (new_badges, user_id))
+        else:
+            conn.execute("INSERT INTO global_profiles (user_id, badges) VALUES (?, ?)", (user_id, badge))
         conn.commit()
 
-async def add_badge_to_user(user_id: int, badge: str):
-    await asyncio.to_thread(_add_badge_to_user_sync, user_id, badge)
+async def add_global_badge(user_id: int, badge: str):
+    await asyncio.to_thread(_add_global_badge_sync, user_id, badge)
