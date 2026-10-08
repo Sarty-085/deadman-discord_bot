@@ -372,23 +372,51 @@ class MusicCog(commands.Cog):
 
         player.home_channel = ctx.channel
 
-        # Search for tracks with automatic SoundCloud fallback if standard search yields nothing
+        # Clean tracking query parameters (e.g. ?si=...) from YouTube URLs
+        search_target = query.strip()
+        if "youtu.be/" in search_target or "youtube.com/" in search_target:
+            try:
+                import urllib.parse
+                parsed = urllib.parse.urlparse(search_target)
+                if parsed.scheme and parsed.netloc:
+                    qs = urllib.parse.parse_qs(parsed.query)
+                    filtered_qs = {k: v for k, v in qs.items() if k in ("v", "list", "index", "t")}
+                    search_target = urllib.parse.urlunparse((
+                        parsed.scheme,
+                        parsed.netloc,
+                        parsed.path.rstrip("/"),
+                        parsed.params,
+                        urllib.parse.urlencode(filtered_qs, doseq=True),
+                        ""
+                    ))
+            except Exception:
+                search_target = query.strip()
+
+        # Search for tracks with multi-tier fallback
         tracks = None
         search_error = None
         try:
-            tracks = await wavelink.Playable.search(query)
+            tracks = await wavelink.Playable.search(search_target)
         except Exception as e:
             search_error = e
 
-        if not tracks and not query.startswith(("http://", "https://")):
+        # If direct URL or search failed, attempt SoundCloud fallback
+        if not tracks:
             try:
-                tracks = await wavelink.Playable.search(query, source=wavelink.TrackSource.SoundCloud)
+                # If it's a raw name, search SoundCloud directly
+                if not search_target.startswith(("http://", "https://")):
+                    tracks = await wavelink.Playable.search(search_target, source=wavelink.TrackSource.SoundCloud)
             except Exception:
                 pass
 
         if not tracks:
             err_info = f" ({search_error})" if search_error else ""
-            return await ctx.send(f"❌ No matching songs found for your search query{err_info}.", ephemeral=True)
+            return await ctx.send(
+                f"❌ Could not load this track{err_info}.\n"
+                "💡 *Tip: Try searching by song name (e.g. `/play Sunflower Post Malone`) or pasting a Spotify/SoundCloud link.*",
+                ephemeral=True
+            )
+
 
         if isinstance(tracks, wavelink.Playlist):
             # Playlist loaded
