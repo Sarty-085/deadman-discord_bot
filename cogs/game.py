@@ -124,6 +124,12 @@ class GameCog(commands.Cog):
         if not game:
             return
 
+        if content.lower() in ("h!skip", "h!skipword", "!skip"):
+            admin_cog = self.bot.get_cog("AdminCog")
+            if admin_cog:
+                await admin_cog.skipword(ctx)
+            return
+
         # Player participation
         player = await add_or_get_player(message.guild.id, message.author.id, message.author.display_name)
         if player.get("is_new"):

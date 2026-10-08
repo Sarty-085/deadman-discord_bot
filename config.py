@@ -10,16 +10,18 @@ BOT_OWNER_ID = int(os.getenv("BOT_OWNER_ID")) if os.getenv("BOT_OWNER_ID") else 
 BOT_NAME = "Wholesome Bot"
 
 # Lavalink Server Configuration (for music hosting)
-LAVALINK_HOST = os.getenv("LAVALINK_HOST", "localhost")
-LAVALINK_PORT = int(os.getenv("LAVALINK_PORT", "2333"))
-LAVALINK_PASSWORD = os.getenv("LAVALINK_PASSWORD", "youshallnotpass")
-LAVALINK_SECURE = os.getenv("LAVALINK_SECURE", "false").lower() in ("true", "1", "yes")
+LAVALINK_HOST = os.getenv("LAVALINK_HOST", "localhost").strip().strip('"').strip("'")
+port_raw = os.getenv("LAVALINK_PORT", "2333").strip().strip('"').strip("'")
+LAVALINK_PORT = int(port_raw) if port_raw.isdigit() else 2333
+LAVALINK_PASSWORD = os.getenv("LAVALINK_PASSWORD", "youshallnotpass").strip().strip('"').strip("'")
+LAVALINK_SECURE = os.getenv("LAVALINK_SECURE", "false").strip().strip('"').strip("'").lower() in ("true", "1", "yes")
 
 # Construct Lavalink URI for Wavelink 3.x
-LAVALINK_URI = os.getenv(
-    "LAVALINK_URI",
-    f"{'https' if LAVALINK_SECURE else 'http'}://{LAVALINK_HOST}:{LAVALINK_PORT}"
-)
+env_uri = os.getenv("LAVALINK_URI")
+if env_uri:
+    LAVALINK_URI = env_uri.strip().strip('"').strip("'")
+else:
+    LAVALINK_URI = f"{'https' if LAVALINK_SECURE else 'http'}://{LAVALINK_HOST}:{LAVALINK_PORT}"
 
 # Cohesive Color Palette
 COLOR_GAME = 0x5865F2       # Discord Blurple

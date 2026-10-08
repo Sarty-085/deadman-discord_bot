@@ -76,11 +76,12 @@ class AdminCog(commands.Cog):
             await ctx.send(embed=embed)
 
     @commands.hybrid_command(
-        name="skip",
+        name="skipword",
+        aliases=["skiphangman", "skw"],
         description="Skip the current hangman word (Server Admins & Moderators)."
     )
     @app_commands.default_permissions(manage_messages=True)
-    async def skip(self, ctx: commands.Context):
+    async def skipword(self, ctx: commands.Context):
         if not self.can_skip(ctx.author):
             await ctx.send("❌ You need Manage Messages or Admin permissions to skip words.", ephemeral=True)
             return
