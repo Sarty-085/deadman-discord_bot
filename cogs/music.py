@@ -311,6 +311,38 @@ class MusicCog(commands.Cog):
         self.panel_messages[player.guild.id] = new_msg
 
     @commands.Cog.listener()
+    async def on_wavelink_track_exception(self, payload: wavelink.TrackExceptionEventPayload):
+        player = payload.player
+        track = payload.track
+        err_msg = payload.exception.get("message", "Playback failed") if isinstance(payload.exception, dict) else str(payload.exception)
+        print(f"[MusicCog] Track exception on '{track.title}': {err_msg}")
+
+        channel = getattr(player, "home_channel", None) if player else None
+        if channel:
+            embed = discord.Embed(
+                title="⚠️ Playback Notice",
+                description=(
+                    f"Could not stream **{track.title}**.\n\n"
+                    f"**Provider Details:** `{err_msg}`\n\n"
+                    "💡 *Tip: If YouTube requires login, link your Google account via OAuth in your Lavalink console, or try a SoundCloud/Spotify track.*"
+                ),
+                color=0xED4245
+            )
+            set_cohesive_style(embed, self.bot.user)
+            await channel.send(embed=embed)
+
+        if player and not player.queue.is_empty:
+            await player.play(player.queue.get())
+
+    @commands.Cog.listener()
+    async def on_wavelink_track_stuck(self, payload: wavelink.TrackStuckEventPayload):
+        player = payload.player
+        track = payload.track
+        print(f"[MusicCog] Track stuck on '{track.title}', skipping to next...")
+        if player and not player.queue.is_empty:
+            await player.play(player.queue.get())
+
+    @commands.Cog.listener()
     async def on_wavelink_track_end(self, payload: wavelink.TrackEventPayload):
         player = payload.player
         if not player:
@@ -340,14 +372,23 @@ class MusicCog(commands.Cog):
 
         player.home_channel = ctx.channel
 
-        # Search for tracks
+        # Search for tracks with automatic SoundCloud fallback if standard search yields nothing
+        tracks = None
+        search_error = None
         try:
-            tracks: wavelink.Search = await wavelink.Playable.search(query)
+            tracks = await wavelink.Playable.search(query)
         except Exception as e:
-            return await ctx.send(f"❌ Search error: {e}", ephemeral=True)
+            search_error = e
+
+        if not tracks and not query.startswith(("http://", "https://")):
+            try:
+                tracks = await wavelink.Playable.search(query, source=wavelink.TrackSource.SoundCloud)
+            except Exception:
+                pass
 
         if not tracks:
-            return await ctx.send("❌ No matching songs found for your search query.", ephemeral=True)
+            err_info = f" ({search_error})" if search_error else ""
+            return await ctx.send(f"❌ No matching songs found for your search query{err_info}.", ephemeral=True)
 
         if isinstance(tracks, wavelink.Playlist):
             # Playlist loaded
@@ -364,6 +405,7 @@ class MusicCog(commands.Cog):
 
         if not player.playing:
             await player.play(player.queue.get(), volume=100)
+
 
     @commands.hybrid_command(name="playnext", description="Queue a track to play immediately after the current song.")
     @app_commands.describe(query="Song title or URL")
