@@ -1,0 +1,30 @@
+# Environment variables
+.env
+
+# SQLite Database files (persisted in container/volume, never committed to git)
+*.db
+data/*.db
+data/
+
+# Large Discord Export JSON
+*.json
+!words/words.json
+
+# Python bytecode & cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+
+# IDE & OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

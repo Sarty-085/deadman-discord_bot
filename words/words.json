@@ -1,0 +1,652 @@
+[
+  {
+    "word": "PLATYPUS",
+    "category": "Animals",
+    "clue": "A semi-aquatic egg-laying mammal native to eastern Australia with a duck-like bill."
+  },
+  {
+    "word": "CHAMELEON",
+    "category": "Animals",
+    "clue": "A distinctive lizard known for changing its skin color and having independently moving eyes."
+  },
+  {
+    "word": "BLUE WHALE",
+    "category": "Animals",
+    "clue": "The largest animal ever known to have lived on Earth."
+  },
+  {
+    "word": "SNOW LEOPARD",
+    "category": "Animals",
+    "clue": "A solitary big cat native to the mountain ranges of Central and South Asia."
+  },
+  {
+    "word": "KOMODO DRAGON",
+    "category": "Animals",
+    "clue": "The largest living species of lizard, native to Indonesian islands."
+  },
+  {
+    "word": "AXOLOTL",
+    "category": "Animals",
+    "clue": "A Mexican amphibian known for its ability to regenerate lost body parts and external feathery gills."
+  },
+  {
+    "word": "HUMMINGBIRD",
+    "category": "Animals",
+    "clue": "A tiny bird capable of hovering in mid-air and flying backwards."
+  },
+  {
+    "word": "KANGAROO",
+    "category": "Animals",
+    "clue": "A large marsupial with powerful hind legs native to Australia."
+  },
+  {
+    "word": "CHEETAH",
+    "category": "Animals",
+    "clue": "The fastest land mammal, capable of reaching speeds over 60 mph in short bursts."
+  },
+  {
+    "word": "OCTOPUS",
+    "category": "Animals",
+    "clue": "An intelligent eight-armed sea creature that can camouflage and squeeze through tiny crevices."
+  },
+  {
+    "word": "PENGUIN",
+    "category": "Animals",
+    "clue": "A flightless aquatic bird that thrives in freezing Antarctic climates."
+  },
+  {
+    "word": "NARWHAL",
+    "category": "Animals",
+    "clue": "An Arctic whale known as the unicorn of the sea due to its long spiral tusk."
+  },
+  {
+    "word": "GIRAFFE",
+    "category": "Animals",
+    "clue": "The tallest living terrestrial animal, famous for its extremely long neck."
+  },
+  {
+    "word": "KOALA",
+    "category": "Animals",
+    "clue": "An Australian tree-dwelling marsupial that feeds almost exclusively on eucalyptus leaves."
+  },
+  {
+    "word": "BALD EAGLE",
+    "category": "Animals",
+    "clue": "A fierce bird of prey with a white-feathered head that serves as a national symbol."
+  },
+  {
+    "word": "MANTIS SHRIMP",
+    "category": "Animals",
+    "clue": "A marine crustacean with hyper-complex eyes and punches as fast as a bullet."
+  },
+  {
+    "word": "SLOTH",
+    "category": "Animals",
+    "clue": "A slow-moving tree-dwelling mammal from Central and South America."
+  },
+  {
+    "word": "MEERKAT",
+    "category": "Animals",
+    "clue": "A small mongoose that lives in underground burrows and stands upright on sentinel duty."
+  },
+  {
+    "word": "HONEY BADGER",
+    "category": "Animals",
+    "clue": "A fearless mammal known for its thick skin and ferocious tenacity against venomous snakes."
+  },
+  {
+    "word": "SEAHORSE",
+    "category": "Animals",
+    "clue": "A small marine fish where the male carries and gives birth to the offspring."
+  },
+  {
+    "word": "CAPYBARA",
+    "category": "Animals",
+    "clue": "The largest living rodent in the world, renowned for its calm and friendly nature."
+  },
+  {
+    "word": "ORCA",
+    "category": "Animals",
+    "clue": "An apex ocean predator also known as the killer whale."
+  },
+  {
+    "word": "RED PANDA",
+    "category": "Animals",
+    "clue": "A reddish-brown arboreal mammal native to the eastern Himalayas with a ringed tail."
+  },
+  {
+    "word": "PANGOLEEN",
+    "category": "Animals",
+    "clue": "A scale-covered mammal that rolls into a tight ball when threatened."
+  },
+  {
+    "word": "WOLVERINE",
+    "category": "Animals",
+    "clue": "A muscular and aggressive carnivore known to take down prey much larger than itself."
+  },
+  {
+    "word": "EMPEROR PENGUIN",
+    "category": "Animals",
+    "clue": "The tallest and heaviest of all living penguin species, enduring harsh Antarctic winters."
+  },
+  {
+    "word": "POISON DART FROG",
+    "category": "Animals",
+    "clue": "A brightly colored tropical amphibian whose skin secretes deadly toxins."
+  },
+  {
+    "word": "GIANT SQUID",
+    "category": "Animals",
+    "clue": "A legendary deep-sea dwelling cephalopod with massive eyes the size of dinner plates."
+  },
+  {
+    "word": "HAMMERHEAD SHARK",
+    "category": "Animals",
+    "clue": "A predator recognizable by the flattened, wide lateral extensions of its head."
+  },
+  {
+    "word": "ELECTRIC EEL",
+    "category": "Animals",
+    "clue": "A South American knifefish that can generate intense electrical shocks to stun prey."
+  },
+  {
+    "word": "ARTIFICIAL INTELLIGENCE",
+    "category": "Technology",
+    "clue": "The simulation of human intelligence processes by computer systems and algorithms."
+  },
+  {
+    "word": "QUANTUM COMPUTING",
+    "category": "Technology",
+    "clue": "A computational paradigm that utilizes qubits and quantum superposition to solve complex problems."
+  },
+  {
+    "word": "MICROPROCESSOR",
+    "category": "Technology",
+    "clue": "An integrated circuit that contains the central processing unit of a computer."
+  },
+  {
+    "word": "FIBER OPTIC",
+    "category": "Technology",
+    "clue": "A technology that transmits data as light pulses along thin glass or plastic strands."
+  },
+  {
+    "word": "CYBERSECURITY",
+    "category": "Technology",
+    "clue": "The practice of protecting systems, networks, and programs from digital attacks."
+  },
+  {
+    "word": "SATELLITE",
+    "category": "Technology",
+    "clue": "An artificial object placed into orbit around a celestial body to gather data or transmit communications."
+  },
+  {
+    "word": "BLOCKCHAIN",
+    "category": "Technology",
+    "clue": "A decentralized, distributed digital ledger used to securely record transactions."
+  },
+  {
+    "word": "SUPERCOMPUTER",
+    "category": "Technology",
+    "clue": "A computer with high-level computational capacity compared to general-purpose machines."
+  },
+  {
+    "word": "MACHINE LEARNING",
+    "category": "Technology",
+    "clue": "A branch of AI focused on building systems that learn and improve from experience without explicit programming."
+  },
+  {
+    "word": "ALGORITHM",
+    "category": "Technology",
+    "clue": "A finite sequence of rigorous instructions used to perform computations and solve problems."
+  },
+  {
+    "word": "NEURAL NETWORK",
+    "category": "Technology",
+    "clue": "A computational model inspired by the biological nerve cells of animal brains."
+  },
+  {
+    "word": "VIRTUAL REALITY",
+    "category": "Technology",
+    "clue": "A simulated 3D experience that can be similar to or completely different from the real world."
+  },
+  {
+    "word": "AUGMENTED REALITY",
+    "category": "Technology",
+    "clue": "An interactive experience where digital computer-generated information is superimposed on the real world."
+  },
+  {
+    "word": "SEMICONDUCTOR",
+    "category": "Technology",
+    "clue": "A material whose electrical conductivity lies between that of a conductor and an insulator, foundational to microchips."
+  },
+  {
+    "word": "CRYPTOGRAPHY",
+    "category": "Technology",
+    "clue": "The study and practice of secure communication techniques in the presence of third-party adversaries."
+  },
+  {
+    "word": "CLOUD COMPUTING",
+    "category": "Technology",
+    "clue": "The on-demand delivery of IT resources and data storage over the Internet with pay-as-you-go pricing."
+  },
+  {
+    "word": "ROBOTICS",
+    "category": "Technology",
+    "clue": "The interdisciplinary branch of engineering and computer science involving the design and construction of automated machines."
+  },
+  {
+    "word": "INTERNET OF THINGS",
+    "category": "Technology",
+    "clue": "A network of physical devices embedded with sensors and software for exchanging data over the web."
+  },
+  {
+    "word": "FIRMWARE",
+    "category": "Technology",
+    "clue": "A specific class of computer software that provides low-level control for a device's specific hardware."
+  },
+  {
+    "word": "FIREWALL",
+    "category": "Technology",
+    "clue": "A network security system that monitors and controls incoming and outgoing network traffic based on predetermined rules."
+  },
+  {
+    "word": "GRAPHICS PROCESSOR",
+    "category": "Technology",
+    "clue": "A specialized electronic circuit designed to rapidly manipulate memory to accelerate rendering images and neural nets."
+  },
+  {
+    "word": "NANOTECHNOLOGY",
+    "category": "Technology",
+    "clue": "The manipulation of matter on an atomic, molecular, and supramolecular scale."
+  },
+  {
+    "word": "TRANSISTOR",
+    "category": "Technology",
+    "clue": "A semiconductor device used to amplify or switch electrical signals and power, the basic building block of modern electronics."
+  },
+  {
+    "word": "BROADBAND",
+    "category": "Technology",
+    "clue": "A high-capacity transmission technique using a wide range of frequencies, enabling simultaneous messages."
+  },
+  {
+    "word": "BANDWIDTH",
+    "category": "Technology",
+    "clue": "The maximum data transfer rate of a network or Internet connection in a given amount of time."
+  },
+  {
+    "word": "AURORA BOREALIS",
+    "category": "Nature",
+    "clue": "Natural electrical light displays in the sky predominantly seen in high-latitude regions, also known as the Northern Lights."
+  },
+  {
+    "word": "RAINFOREST",
+    "category": "Nature",
+    "clue": "A dense forest characterized by high and continuous rainfall and immense biological diversity."
+  },
+  {
+    "word": "VOLCANO",
+    "category": "Nature",
+    "clue": "A rupture in the crust of a planetary-mass object that allows hot lava, volcanic ash, and gases to escape."
+  },
+  {
+    "word": "GLACIER",
+    "category": "Nature",
+    "clue": "A persistent body of dense ice that is constantly moving under its own weight."
+  },
+  {
+    "word": "CORAL REEF",
+    "category": "Nature",
+    "clue": "An underwater ecosystem characterized by reef-building corals, bustling with marine biodiversity."
+  },
+  {
+    "word": "REDWOOD TREE",
+    "category": "Nature",
+    "clue": "One of the tallest living tree species on the planet, towering along coastal regions."
+  },
+  {
+    "word": "SOLAR ECLIPSE",
+    "category": "Nature",
+    "clue": "An astronomical event that occurs when the Moon passes between Earth and the Sun, obscuring the Sun's light."
+  },
+  {
+    "word": "TSUNAMI",
+    "category": "Nature",
+    "clue": "A series of immense ocean waves caused by underwater earthquakes or volcanic eruptions."
+  },
+  {
+    "word": "PHOTOSYNTHESIS",
+    "category": "Nature",
+    "clue": "The biological process used by plants and other organisms to convert light energy into chemical energy."
+  },
+  {
+    "word": "WATERFALL",
+    "category": "Nature",
+    "clue": "A river or other body of water's steep fall over a rocky ledge into a plunge pool below."
+  },
+  {
+    "word": "AVALANCHE",
+    "category": "Nature",
+    "clue": "A rapid flow of snow down a sloping surface such as a mountain side."
+  },
+  {
+    "word": "METEOR SHOWER",
+    "category": "Nature",
+    "clue": "A celestial event in which numerous meteoroids burn up in the atmosphere as streaks of light."
+  },
+  {
+    "word": "GEYSER",
+    "category": "Nature",
+    "clue": "A hot spring in which water intermittently boils, sending a tall column of water and steam into the air."
+  },
+  {
+    "word": "TORNADO",
+    "category": "Nature",
+    "clue": "A violently rotating column of air touching both the surface of the Earth and a cumulonimbus cloud."
+  },
+  {
+    "word": "HURRICANE",
+    "category": "Nature",
+    "clue": "A massive tropical storm with rotating high-speed winds and heavy rain, formed over warm ocean waters."
+  },
+  {
+    "word": "BIOLUMINESCENCE",
+    "category": "Nature",
+    "clue": "The production and emission of light by a living organism, commonly seen in deep sea creatures and fireflies."
+  },
+  {
+    "word": "PERMAFROST",
+    "category": "Nature",
+    "clue": "Ground that continuously remains completely frozen at or below zero degrees Celsius for two or more years."
+  },
+  {
+    "word": "MANGROVE",
+    "category": "Nature",
+    "clue": "A shrub or tree that grows in coastal saline or brackish water with tangled, exposed root networks."
+  },
+  {
+    "word": "DESERT DUNES",
+    "category": "Nature",
+    "clue": "Hills of loose sand shaped by the movement of wind in arid regions."
+  },
+  {
+    "word": "STALACTITE",
+    "category": "Nature",
+    "clue": "An icicle-shaped mineral deposit that hangs from the roof of a cave."
+  },
+  {
+    "word": "STALAGMITE",
+    "category": "Nature",
+    "clue": "An upward-growing mineral mound formed on a cave floor by dripping water from the ceiling."
+  },
+  {
+    "word": "THUNDERSTORM",
+    "category": "Nature",
+    "clue": "A weather condition characterized by the presence of lightning and its acoustic effect of thunder."
+  },
+  {
+    "word": "CANYON",
+    "category": "Nature",
+    "clue": "A deep gorge carved between cliffs typically resulting from weathering and the erosive activity of a river."
+  },
+  {
+    "word": "OASIS",
+    "category": "Nature",
+    "clue": "A fertile spot in a desert where fresh water is found to support vegetation."
+  },
+  {
+    "word": "EVERGLADES",
+    "category": "Nature",
+    "clue": "A vast natural wetland ecosystem of tropical wetlands in southern Florida."
+  },
+  {
+    "word": "MOUNT EVEREST",
+    "category": "Geography",
+    "clue": "Earth's highest mountain above sea level, located in the Mahalangur Himal sub-range of the Himalayas."
+  },
+  {
+    "word": "SAHARA DESERT",
+    "category": "Geography",
+    "clue": "The largest hot desert in the world, covering much of North Africa."
+  },
+  {
+    "word": "AMAZON RIVER",
+    "category": "Geography",
+    "clue": "The largest river by discharge volume of water in the world, flowing through South America."
+  },
+  {
+    "word": "MADAGASCAR",
+    "category": "Geography",
+    "clue": "An island country located off the southeastern coast of Africa, famed for unique biodiversity like lemurs."
+  },
+  {
+    "word": "PACIFIC OCEAN",
+    "category": "Geography",
+    "clue": "The largest and deepest of Earth's five oceanic divisions."
+  },
+  {
+    "word": "GRAND CANYON",
+    "category": "Geography",
+    "clue": "A steep-sided gorge carved by the Colorado River in Arizona, United States."
+  },
+  {
+    "word": "GREAT BARRIER REEF",
+    "category": "Geography",
+    "clue": "The world's largest coral reef system, located in the Coral Sea off the coast of Australia."
+  },
+  {
+    "word": "ICELAND",
+    "category": "Geography",
+    "clue": "A Nordic island country defined by its dramatic volcanic landscape of hot springs and massive glaciers."
+  },
+  {
+    "word": "MEDITERRANEAN SEA",
+    "category": "Geography",
+    "clue": "A sea connected to the Atlantic Ocean, surrounded by Europe, Africa, and Asia."
+  },
+  {
+    "word": "ANTARCTICA",
+    "category": "Geography",
+    "clue": "Earth's southernmost continent, containing the geographic South Pole and covered by an immense ice sheet."
+  },
+  {
+    "word": "HIMALAYAS",
+    "category": "Geography",
+    "clue": "A great mountain range in Asia separating the plains of the Indian subcontinent from the Tibetan Plateau."
+  },
+  {
+    "word": "NILE RIVER",
+    "category": "Geography",
+    "clue": "A major north-flowing river in northeastern Africa, historically considered the longest river in the world."
+  },
+  {
+    "word": "GALAPAGOS ISLANDS",
+    "category": "Geography",
+    "clue": "An archipelago of volcanic islands in the Pacific Ocean famous for endemic species studied by Charles Darwin."
+  },
+  {
+    "word": "BERMUDA TRIANGLE",
+    "category": "Geography",
+    "clue": "A loosely defined region in the western North Atlantic where aircraft and ships supposedly disappeared mysteriously."
+  },
+  {
+    "word": "MARIANA TRENCH",
+    "category": "Geography",
+    "clue": "The deepest known oceanic trench on Earth, situated in the western Pacific Ocean."
+  },
+  {
+    "word": "KILIMANJARO",
+    "category": "Geography",
+    "clue": "A dormant volcano in Tanzania that is the highest single free-standing mountain peak in the world."
+  },
+  {
+    "word": "GREENLAND",
+    "category": "Geography",
+    "clue": "The world's largest island, situated between the Arctic and Atlantic oceans."
+  },
+  {
+    "word": "VICTORIA FALLS",
+    "category": "Geography",
+    "clue": "A massive waterfall on the Zambezi River in southern Africa, known locally as The Smoke that Thunders."
+  },
+  {
+    "word": "PANAMA CANAL",
+    "category": "Geography",
+    "clue": "An artificial 82 km waterway that cuts across Central America connecting the Atlantic and Pacific oceans."
+  },
+  {
+    "word": "YELLOWSTONE",
+    "category": "Geography",
+    "clue": "The first national park in the world, known for geothermal features like Old Faithful."
+  },
+  {
+    "word": "DEAD SEA",
+    "category": "Geography",
+    "clue": "A landlocked hypersaline lake between Jordan and Israel, lying at the lowest elevation on land."
+  },
+  {
+    "word": "BAY OF BENGAL",
+    "category": "Geography",
+    "clue": "The largest water bay in the world, forming the northeastern part of the Indian Ocean."
+  },
+  {
+    "word": "ANDES MOUNTAINS",
+    "category": "Geography",
+    "clue": "The longest continental mountain range in the world, running along the western coast of South America."
+  },
+  {
+    "word": "CASPIAN SEA",
+    "category": "Geography",
+    "clue": "The world's largest inland body of water, often described as the world's largest lake."
+  },
+  {
+    "word": "STRAIT OF GIBRALTAR",
+    "category": "Geography",
+    "clue": "A narrow strait that connects the Atlantic Ocean to the Mediterranean Sea and separates Europe from Africa."
+  },
+  {
+    "word": "SUPERNOVA",
+    "category": "Science",
+    "clue": "A powerful and luminous explosion of a massive dying star."
+  },
+  {
+    "word": "BLACK HOLE",
+    "category": "Science",
+    "clue": "A region of spacetime where gravity is so strong that nothing, not even light, can escape from it."
+  },
+  {
+    "word": "GRAVITATIONAL WAVE",
+    "category": "Science",
+    "clue": "Ripples in spacetime caused by some of the most violent and energetic processes in the universe."
+  },
+  {
+    "word": "THERMODYNAMICS",
+    "category": "Science",
+    "clue": "The branch of physics that deals with heat, work, temperature, and their relation to energy and radiation."
+  },
+  {
+    "word": "MITOCHONDRIA",
+    "category": "Science",
+    "clue": "Membrane-bound cell organelles that generate most of the chemical energy needed to power the cell's biochemical reactions."
+  },
+  {
+    "word": "PERIODIC TABLE",
+    "category": "Science",
+    "clue": "A tabular display of the chemical elements organized by atomic number and recurring chemical properties."
+  },
+  {
+    "word": "PARTICLE ACCELERATOR",
+    "category": "Science",
+    "clue": "A machine that uses electromagnetic fields to propel charged particles to nearly light speeds."
+  },
+  {
+    "word": "SPEED OF LIGHT",
+    "category": "Science",
+    "clue": "A universal physical constant defined as approximately 299,792 kilometers per second in a vacuum."
+  },
+  {
+    "word": "EXOPLANET",
+    "category": "Science",
+    "clue": "Any planet that orbits a star outside our solar system."
+  },
+  {
+    "word": "DNA HELIX",
+    "category": "Science",
+    "clue": "The twisted ladder-shaped molecular structure carrying genetic instructions in living organisms."
+  },
+  {
+    "word": "NUCLEAR FUSION",
+    "category": "Science",
+    "clue": "A reaction in which two or more atomic nuclei combine to form different atomic nuclei, powering the Sun."
+  },
+  {
+    "word": "DARK MATTER",
+    "category": "Science",
+    "clue": "A hypothetical form of matter that appears not to interact with light, accounting for about 85% of cosmic matter."
+  },
+  {
+    "word": "ELECTROMAGNETISM",
+    "category": "Science",
+    "clue": "A fundamental physical interaction that occurs between electrically charged particles."
+  },
+  {
+    "word": "NEBULA",
+    "category": "Science",
+    "clue": "A giant interstellar cloud of dust and gas in space, often acting as a nursery for new stars."
+  },
+  {
+    "word": "PULSAR",
+    "category": "Science",
+    "clue": "A highly magnetized rotating neutron star that emits beams of electromagnetic radiation from its magnetic poles."
+  },
+  {
+    "word": "CRISPR CAS9",
+    "category": "Science",
+    "clue": "A revolutionary genetic engineering technology used to edit parts of the genome by removing, adding or altering sections of DNA."
+  },
+  {
+    "word": "PLATE TECTONICS",
+    "category": "Science",
+    "clue": "The scientific theory that Earth's outer shell is divided into large moving slabs gliding over the mantle."
+  },
+  {
+    "word": "ABSOLUTE ZERO",
+    "category": "Science",
+    "clue": "The lowest possible thermodynamic temperature, at which the enthalpy and entropy of a cooled ideal gas reach minimum value."
+  },
+  {
+    "word": "RADIOACTIVITY",
+    "category": "Science",
+    "clue": "The spontaneous emission of ionizing radiation from an unstable atomic nucleus."
+  },
+  {
+    "word": "NEUTRINO",
+    "category": "Science",
+    "clue": "An extremely tiny subatomic particle with no electric charge and a near-zero mass that easily passes through matter."
+  },
+  {
+    "word": "SUPERCONDUCTIVITY",
+    "category": "Science",
+    "clue": "A phenomenon of zero electrical resistance and expulsion of magnetic fields occurring in certain materials at low temperatures."
+  },
+  {
+    "word": "HUBBLE TELESCOPE",
+    "category": "Science",
+    "clue": "A space telescope launched into low Earth orbit in 1990 that has captured iconic views of distant galaxies."
+  },
+  {
+    "word": "EVENT HORIZON",
+    "category": "Science",
+    "clue": "The boundary surrounding a black hole beyond which events cannot affect an outside observer."
+  },
+  {
+    "word": "QUANTUM ENTANGLEMENT",
+    "category": "Science",
+    "clue": "A phenomenon where a pair of particles interact such that the quantum state of each cannot be described independently."
+  },
+  {
+    "word": "DOPPLER EFFECT",
+    "category": "Science",
+    "clue": "The change in frequency or wavelength of a wave in relation to an observer moving relative to the wave source."
+  }
+]
