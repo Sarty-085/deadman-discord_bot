@@ -181,15 +181,21 @@ class MusicCog(commands.Cog):
 
     async def cog_load(self):
         # Connect node to Lavalink server
+        print(f"[MusicCog] Attempting connection to Lavalink at {LAVALINK_URI} (password: '{LAVALINK_PASSWORD}')")
         node = wavelink.Node(
             uri=LAVALINK_URI,
             password=LAVALINK_PASSWORD
         )
         try:
             await wavelink.Pool.connect(nodes=[node], client=self.bot, cache_capacity=100)
-            print(f"[MusicCog] Wavelink connected to Lavalink at {LAVALINK_URI}")
+            print(f"[MusicCog] Wavelink pool initiated for {LAVALINK_URI}")
         except Exception as e:
             print(f"[MusicCog] Notice: Could not connect to Lavalink at {LAVALINK_URI}: {e}")
+
+    @commands.Cog.listener()
+    async def on_wavelink_node_ready(self, payload: wavelink.NodeReadyEventPayload):
+        print(f"[MusicCog] Successfully connected and authenticated with Lavalink node: {payload.node.identifier}")
+
 
     # --- Embed & Panel Helpers ---
     def build_player_embed(self, player: wavelink.Player) -> discord.Embed:
