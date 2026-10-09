@@ -45,6 +45,58 @@ MISS_MESSAGES = {
     ]
 }
 
+EMOJI_PATTERN = re.compile(
+    r'[\U00010000-\U0010ffff\u2600-\u27bf\u2b50\u2b55\u231a-\u231b\u23e9-\u23ec\u23f0\u23f3\u200d\ufe0f]'
+)
+
+def validate_guess(content: str, target_word: str) -> tuple[bool, str]:
+    text = content.strip()
+    if not text:
+        return False, "none"
+
+    # 1. Ignore Discord custom emojis: <:name:id> or <a:name:id>
+    if re.search(r'<a?:\w+:\d+>', text):
+        return False, "none"
+
+    # 2. Ignore Discord shortcodes :name:
+    if re.search(r':[a-zA-Z0-9_]+:', text):
+        return False, "none"
+
+    # 3. Ignore Unicode emojis and symbols
+    if EMOJI_PATTERN.search(text):
+        return False, "none"
+
+    # 4. Ignore messages with conversational punctuation (?, !, ., ,, etc.)
+    # Only letters, spaces, and hyphens are valid in word guesses
+    if not re.match(r'^[a-zA-Z\s\-]+$', text):
+        return False, "none"
+
+    # 5. Ignore long messages / chat sentences (max phrase length is 23 chars)
+    if len(text) > 25:
+        return False, "none"
+
+    # Case A: Single letter guess
+    if len(text) == 1 and text.isalpha():
+        return True, "letter"
+
+    # Case B: Full word / phrase guess
+    tokens = text.split()
+    target_tokens = target_word.split()
+    if len(tokens) > max(3, len(target_tokens)):
+        return False, "none"
+
+    clean_guess = re.sub(r'[^A-Z]', '', text.upper())
+    clean_target = re.sub(r'[^A-Z]', '', target_word.upper())
+
+    if len(clean_guess) < 2:
+        return False, "none"
+
+    # If the word length is wildly different from target, it's casual chatter
+    if abs(len(clean_guess) - len(clean_target)) > 3:
+        return False, "none"
+
+    return True, "word"
+
 class GameCog(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -130,7 +182,14 @@ class GameCog(commands.Cog):
                 await admin_cog.skipword(ctx)
             return
 
-        # Player participation
+        word = game["word"].upper()
+
+        # Validate whether message is a deliberate guess or casual chatter / emoji
+        is_guess, guess_type = validate_guess(content, word)
+        if not is_guess:
+            return
+
+        # Player participation (only registered on genuine guess attempts)
         player = await add_or_get_player(message.guild.id, message.author.id, message.author.display_name)
         if player.get("is_new"):
             await message.channel.send(f"A new hero enters the battlefield! Welcome, {message.author.mention}!")
@@ -139,11 +198,10 @@ class GameCog(commands.Cog):
         if player["lives"] <= 0:
             return
 
-        word = game["word"].upper()
         guessed_letters = set(game["guessed_letters"])
 
         # Case 1: Single letter guess
-        if len(content) == 1 and content.isalpha():
+        if guess_type == "letter":
             letter = content.upper()
 
             if letter in guessed_letters:
@@ -170,10 +228,10 @@ class GameCog(commands.Cog):
             return
 
         # Case 2: Full word guess
-        clean_guess = re.sub(r'[^A-Z]', '', content.upper())
-        clean_target = re.sub(r'[^A-Z]', '', word)
+        elif guess_type == "word":
+            clean_guess = re.sub(r'[^A-Z]', '', content.upper())
+            clean_target = re.sub(r'[^A-Z]', '', word)
 
-        if clean_guess and len(clean_guess) >= 2:
             if clean_guess == clean_target:
                 await self.handle_word_win(message.channel, message.author, word)
                 return

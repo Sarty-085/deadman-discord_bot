@@ -29,11 +29,11 @@ class StatsCog(commands.Cog):
 
     @commands.hybrid_command(
         name="help",
-        description="View the Wholesome Bot hangman rules, commands, and badge guide."
+        description=f"View the {BOT_NAME} hangman rules, commands, and badge guide."
     )
     async def help_cmd(self, ctx: commands.Context):
         embed = discord.Embed(
-            title="🎮 Wholesome Bot — Hangman Guide",
+            title=f"🎮 {BOT_NAME} — Hangman Guide",
             description="Welcome to cooperative multiplayer Hangman with clues!\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━",
             color=COLOR_HELP
         )

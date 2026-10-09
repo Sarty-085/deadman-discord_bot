@@ -7,7 +7,7 @@ DISCORD_TOKEN = os.getenv("DISCORD_TOKEN") or os.getenv("BOT_TOKEN", "")
 BOT_PREFIX = os.getenv("BOT_PREFIX", "h!")
 BOT_OWNER_ID = int(os.getenv("BOT_OWNER_ID")) if os.getenv("BOT_OWNER_ID") else None
 
-BOT_NAME = "Wholesome Bot"
+BOT_NAME = "Vitamin B12"
 
 # Lavalink Server Configuration (for music hosting)
 LAVALINK_HOST = os.getenv("LAVALINK_HOST", "localhost").strip().strip('"').strip("'")
